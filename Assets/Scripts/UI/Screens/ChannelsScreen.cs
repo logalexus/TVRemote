@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DefaultNamespace.UI.Channels;
+using DG.Tweening;
 using UI.Base;
 using UI.Controllers;
 using UnityEngine;
@@ -77,13 +78,26 @@ namespace UI.Screens
 
         public void CorrectChannelVisible(ChannelView channelView)
         {
+            RectTransform channelRect = channelView.GetComponent<RectTransform>();
             Vector2 leftBorder = Vector2.zero;
             Vector2 rightBorder = Vector2.right * canvas.rect.width;
             RectTransform channelContainerRect = channelContainer.GetComponent<RectTransform>();
-            Vector2 currentPosition =  channelContainerRect.localPosition + channelView.GetComponent<RectTransform>().localPosition;
+            Vector2 currentPosition =  channelContainerRect.localPosition + channelRect.localPosition;
+
             
+            if (currentPosition.x < leftBorder.x)
+            {
+                float distance = leftBorder.x - currentPosition.x;
+                distance += channelRect.rect.width;
+                channelContainerRect.DOLocalMoveX(distance, 1f).SetRelative(true);
+            }
             
-            Debug.Log(currentPosition);
+            if (currentPosition.x > rightBorder.x)
+            {
+                float distance = rightBorder.x - currentPosition.x;
+                distance -= channelRect.rect.width;
+                channelContainerRect.DOLocalMoveX(distance, 1f).SetRelative(true);
+            }
         }
         
     }
