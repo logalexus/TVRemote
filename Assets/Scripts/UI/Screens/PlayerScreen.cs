@@ -16,12 +16,26 @@ namespace UI.Screens
 
         public override void Init(BaseUIController baseUIController)
         {
-            base.Init(baseUIController);
-            
             _uiController = baseUIController as UIController;
-            
+
             ok.onClick.AddListener(_uiController.OpenChannelScreen);
             back.onClick.AddListener(_uiController.OpenChannelScreen);
+            
+            base.Init(baseUIController);
+        }
+        
+        public override void Open()
+        {
+            base.Open();
+            _uiController.OnOk += _uiController.OpenChannelScreen;
+            _uiController.OnBack += _uiController.OpenChannelScreen;
+        }
+
+        public override void Close()
+        {
+            base.Close();
+            _uiController.OnOk -= _uiController.OpenChannelScreen;
+            _uiController.OnBack -= _uiController.OpenChannelScreen;
         }
     }
 }

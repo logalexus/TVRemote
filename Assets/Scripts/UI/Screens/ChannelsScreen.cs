@@ -25,14 +25,14 @@ namespace UI.Screens
 
         public override void Init(BaseUIController baseUIController)
         {
-            base.Init(baseUIController);
-            
             _uiController = baseUIController as UIController;
             
             ok.onClick.AddListener(_uiController.OpenPlayerScreen);
             back.onClick.AddListener(_uiController.OpenLoginScreen);
-
+            
             CreateChannels();
+            
+            base.Init(baseUIController);
         }
 
         private void Start()
@@ -40,13 +40,18 @@ namespace UI.Screens
             SelectChannel(_currentChannelIndex);
         }
 
-        private void Update()
+        public override void Open()
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-                SelectNextChannel();
-            
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-                SelectNextChannel(-1);
+            base.Open();
+            _uiController.OnOk += _uiController.OpenPlayerScreen;
+            _uiController.OnBack += _uiController.OpenLoginScreen;
+        }
+
+        public override void Close()
+        {
+            base.Close();
+            _uiController.OnOk -= _uiController.OpenPlayerScreen;
+            _uiController.OnBack -= _uiController.OpenLoginScreen;
         }
 
         private void CreateChannels()
@@ -71,6 +76,7 @@ namespace UI.Screens
 
         public void SelectChannel(int index)
         {
+            _currentChannelIndex = Mathf.Min(index, _channelViews.Count - 1);
             ChannelView channel = _channelViews[_currentChannelIndex];
             channel.GetComponent<Button>().Select();
             CorrectChannelVisible(channel);
